@@ -1,21 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Tarefas</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Adicionando estilo para os tooltips */
+        .task-actions {
+            display: inline-flex;
+            gap: 10px;
+        }
+
+        .task-actions button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .task-actions button:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>Lista de Tarefas</h1>
-        <div class="input-group">
-            <input type="text" id="nova-tarefa" placeholder="Digite uma nova tarefa..." />
-            <button id="adicionar-tarefa">Adicionar</button>
+        <h1>📝 Lista de Tarefas</h1>
+        <div class="input-container">
+            <input type="text" id="taskInput" placeholder="Digite uma nova tarefa">
+            <button onclick="addTask()">Adicionar ➕</button>
         </div>
-        <ul id="lista-tarefas"></ul>
+
+        <ul id="taskList"></ul>
     </div>
 
-    <script src="/static/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadTasks);
+    
+        // Função para adicionar tarefa
+        function addTask() {
+            let taskInput = document.getElementById("taskInput");
+            let task = taskInput.value.trim();
+    
+            if (task === "") {
+                alert("Por favor, digite uma tarefa.");
+                return;
+            }
+    
+            fetch("/add_task", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ task: task })
+            })
+            .then(response => response.json())
+            .then(() => {
+                taskInput.value = "";
+                loadTasks();
+            });
+        }
+    
+        // Função para carregar tarefas
+        function loadTasks() {
+            fetch("/get_tasks")
+                .then(response => response.json())
+                .then(data => {
+                    let taskList = document.getElementById("taskList");
+                    taskList.innerHTML = "";
+    
+                    data.tasks.forEach((task) => {
+                        let li = document.createElement("li");
+                        li.innerHTML = `
+                            <span>${task.task}</span>
+                            <div class="task-actions">
+                                <button class="edit-btn" data-tooltip="Editar" onclick="editTask(${task.id}, '${task.task}')">✏️</button>
+                                <button class="delete-btn" data-tooltip="Excluir" onclick="deleteTask(${task.id})">❌</button>
+                            </div>
+                        `;
+                        taskList.appendChild(li);
+                    });
+                });
+        }
+    
+        // Função para editar tarefa
+        function editTask(id, oldTask) {
+            let newTask = prompt("Edite a tarefa", oldTask);
+            if (newTask && newTask !== oldTask) {
+                fetch("/update_task", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id, task: newTask })
+                })
+                .then(response => response.json())
+                .then(() => loadTasks());
+            }
+        }
+
+        // Função para deletar tarefa
+        function deleteTask(id) {
+            fetch("/delete_task", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: id })
+            })
+            .then(() => loadTasks());
+        }
+    </script>
+
 </body>
 </html>

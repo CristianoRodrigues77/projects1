@@ -1,26 +1,44 @@
+/* Definição de cores */
+:root {
+    --background-color: #1e1e1e;  /* Fundo escuro */
+    --card-background: #2c2c2c;   /* Cor do bloco da lista */
+    --text-color: #f1f1f1;        /* Cor do texto */
+    --input-bg: #3a3a3a;          /* Cor de fundo do input */
+    --button-bg: #28a745;         /* Cor do botão principal */
+    --button-hover: #218838;      /* Cor do botão ao passar o mouse */
+    --delete-color: #e74c3c;      /* Cor do botão de deletar */
+    --delete-hover: #c0392b;      /* Cor do botão de deletar ao passar o mouse */
+}
+
+/* Reset básico */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    text-align: center;
     margin: 0;
     padding: 0;
 }
 
+/* Container principal */
 .container {
-    max-width: 600px;
+    width: 90%;
+    max-width: 500px;
+    background: var(--card-background);
     margin: 50px auto;
     padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
 }
 
+/* Título */
 h1 {
-    text-align: center;
-    color: #5cb85c;
+    color: var(--text-color);
+    font-size: 24px;
 }
 
-.input-group {
+/* Campo de entrada e botão */
+.input-container {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
@@ -28,43 +46,63 @@ h1 {
 
 input {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
     font-size: 16px;
-    border: 2px solid #5cb85c;
-    border-radius: 4px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    outline: none;
 }
 
 button {
-    background-color: #5cb85c;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    padding: 12px;
     font-size: 16px;
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 button:hover {
-    background-color: #4cae4c;
+    background-color: var(--button-hover);
 }
 
+/* Lista de tarefas */
 ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
 }
 
 li {
-    padding: 10px;
-    margin-bottom: 5px;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    background: #3a3a3a;
+    padding: 12px;
+    margin: 5px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
 }
 
-li .remove {
-    color: red;
+li:hover {
+    transform: scale(1.02);
+}
+
+/* Botão de deletar */
+.delete-btn {
+    background: none;
+    border: none;
+    color: var(--delete-color);
+    font-size: 18px;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+.delete-btn:hover {
+    color: var(--delete-hover);
+    transform: scale(1.2);
 }
